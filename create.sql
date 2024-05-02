@@ -38,3 +38,8 @@ CREATE TABLE reviews (
     num_votes INT,
     facebook_likes INT
 );
+
+\copy people FROM '/tmp/people.csv' DELIMITER ',' CSV HEADER;
+\copy films FROM '/tmp/films.csv' DELIMITER ',' CSV HEADER;
+\copy roles FROM '/tmp/roles.csv' DELIMITER ',' CSV HEADER;
+\copy reviews FROM '/tmp/reviews.csv' DELIMITER ',' CSV HEADER;
