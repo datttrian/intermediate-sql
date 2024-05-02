@@ -14,7 +14,7 @@ CREATE TABLE films (
     language VARCHAR(255),
     certification VARCHAR(255),
     gross INT,
-    budget INT
+    budget BIGINT
 );
 
 CREATE TABLE roles (
