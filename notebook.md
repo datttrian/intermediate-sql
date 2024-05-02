@@ -1,0 +1,831 @@
+# Intermediate SQL
+
+## Selecting Data
+
+### Practice with COUNT()
+
+As you've seen, `COUNT(*)` tells you how many records are in a table.
+However, if you want to count the number of *non-missing* values in a
+particular field, you can call `COUNT()` on just that field.
+
+Let's get some practice with `COUNT()`! You can look at the data in the
+tables throughout these exercises by clicking on the table name in the
+console.
+
+**Instructions**
+
+- Count the total number of records in the `people` table, aliasing the
+  result as `count_records`.
+
+<!-- -->
+
+- Count the number of records with a `birthdate` in the `people` table,
+  aliasing the result as `count_birthdate`.
+
+<!-- -->
+
+- Count the records for languages and countries in the `films` table;
+  alias as `count_languages` and `count_countries`.
+
+**Answer**
+
+```{python}
+%%sql
+-- Count the number of records in the people table
+SELECT COUNT(*) AS count_records
+FROM people;
+
+-- Count the number of birthdates in the people table
+SELECT COUNT(birthdate) AS count_birthdate
+FROM people;
+
+-- Count the records for languages and countries represented in the films table
+SELECT COUNT(language) AS count_languages, COUNT(country) AS count_countries
+FROM films;
+```
+
+### SELECT DISTINCT
+
+Often query results will include many duplicate values. You can use the
+`DISTINCT` keyword to select the unique values from a field.
+
+This might be useful if, for example, you're interested in knowing which
+languages are represented in the `films` table. See if you can find out
+what countries are represented in this table with the following
+exercises.
+
+**Instructions**
+
+- Return the unique countries represented in the `films` table using
+  `DISTINCT`.
+
+<!-- -->
+
+- Return the number of unique countries represented in the `films`
+  table, aliased as `count_distinct_countries`.
+
+**Answer**
+
+```{python}
+%%sql
+-- Return the unique countries from the films table
+SELECT DISTINCT country
+FROM films;
+
+-- Count the distinct countries from the films table
+SELECT COUNT(DISTINCT country) AS count_distinct_countries
+FROM films;
+```
+
+### Debugging errors
+
+Debugging is an essential skill for all coders, and it comes from making
+many mistakes and learning from them.
+
+In this exercise, you'll be given some buggy code that you'll need to
+fix.
+
+**Instructions**
+
+- Debug and fix the SQL query provided.
+
+<!-- -->
+
+- Find the two errors in this code; the same error has been repeated
+  twice.
+
+<!-- -->
+
+- Find the two bugs in this final query.
+
+**Answer**
+
+```{python}
+%%sql
+-- Debug this code
+SELECT certification
+FROM films
+LIMIT 5;
+
+-- Debug this code
+SELECT film_id, imdb_score, num_votes
+FROM reviews;
+
+-- Debug this code
+SELECT COUNT(birthdate) AS count_birthdays
+FROM people;
+```
+
+### Formatting
+
+Readable code is highly valued in the coding community and professional
+settings. Without proper formatting, code and results can be difficult
+to interpret. You'll often be working with other people that need to
+understand your code or be able to explain your results, so having a
+solid formatting habit is essential.
+
+In this exercise, you'll correct poorly written code to better adhere to
+SQL style standards.
+
+**Instructions**
+
+- Adjust the sample code so that it is in line with standard practices.
+
+**Answer**
+
+```{python}
+%%sql
+-- Rewrite this query
+SELECT person_id, role
+FROM roles
+LIMIT 10;
+```
+
+## Filtering Records
+
+### Using WHERE with numbers
+
+Filtering with `WHERE` allows you to analyze your data better. You may
+have a dataset that includes a range of different movies, and you need
+to do a case study on the most notable films with the biggest budgets.
+In this case, you'll want to filter your data to a specific `budget`
+range.
+
+Now it's your turn to use the `WHERE` clause to filter numeric values!
+
+**Instructions**
+
+- Select the `film_id` and `imdb_score` from the `reviews` table and
+  filter on scores higher than 7.0.
+
+<!-- -->
+
+- Select the `film_id` and `facebook_likes` of the first ten records
+  with less than 1000 likes from the `reviews` table.
+
+<!-- -->
+
+- Count how many records have a `num_votes` of at least 100,000; use the
+  alias `films_over_100K_votes`.
+
+**Answer**
+
+```{python}
+%%sql
+-- Select film_ids and imdb_score with an imdb_score over 7.0
+SELECT film_id, imdb_score
+FROM reviews
+WHERE imdb_score > 7.0;
+
+-- Select film_ids and facebook_likes for ten records with less than 1000 likes 
+SELECT film_id, facebook_likes
+FROM reviews
+WHERE facebook_likes < 1000
+LIMIT 10;
+
+-- Count the records with at least 100,000 votes
+SELECT COUNT(*) AS films_over_100K_votes
+FROM reviews
+WHERE num_votes >= 100000;
+```
+
+### Using WHERE with text
+
+`WHERE` can also filter string values.
+
+Imagine you are part of an organization that gives cinematography
+awards, and you have several international categories. Before you
+confirm an award for every language listed in your dataset, it may be
+worth seeing if there are enough films of a specific language to make it
+a fair competition. If there is only one movie or a significant skew, it
+may be worth considering a different way of giving international awards.
+
+Let's try this out!
+
+**Instructions**
+
+- Select and count the `language` field using the alias `count_spanish`.
+- Apply a filter to select only `Spanish` from the `language` field.
+
+**Answer**
+
+```{python}
+%%sql
+-- Count the Spanish-language films
+SELECT COUNT(language) AS count_spanish
+FROM films
+WHERE language = 'Spanish';
+```
+
+### Using AND
+
+The following exercises combine `AND` and `OR` with the `WHERE` clause.
+Using these operators together strengthens your queries and analyses of
+data.
+
+You will apply these new skills now on the `films` table.
+
+**Instructions**
+
+- Select the `title` and `release_year` for all German-language films
+  released before 2000.
+
+<!-- -->
+
+- Update the query from the previous step to show German-language films
+  released after 2000 rather than before.
+
+<!-- -->
+
+- Select all details for German-language films released after 2000 but
+  before 2010 using **only** `WHERE` and `AND`.
+
+**Answer**
+
+```{python}
+%%sql
+-- Select the title and release_year for all German-language films released before 2000
+SELECT title, release_year
+FROM films
+WHERE release_year < 2000
+	AND language = 'German';
+
+-- Update the query to see all German-language films released after 2000
+SELECT title, release_year
+FROM films
+WHERE release_year < 2000
+	AND language = 'German';
+
+-- Select all records for German-language films released after 2000 and before 2010
+SELECT *
+FROM films
+WHERE release_year > 2000
+	AND release_year < 2010
+	AND language = 'German';
+```
+
+### Using OR
+
+This time you'll write a query to get the `title` and `release_year` of
+films released in 1990 or 1999, which were in English or Spanish and
+took in more than \$2,000,000 `gross`.
+
+It looks like a lot, but you can build the query up one step at a time
+to get comfortable with the underlying concept in each step. Let's go!
+
+**Instructions**
+
+- Select the `title` and `release_year` for films released in 1990 or
+  1999 using only `WHERE` and `OR`.
+- Filter the records to only include English or Spanish-language films.
+- Finally, restrict the query to only return films worth more than $2,000,000 `gross`.
+
+**Answer**
+
+```{python}
+%%sql
+-- Find the title and year of films from 1990 or 1999
+SELECT title, release_year
+FROM films
+WHERE release_year = 1990 OR release_year = 1999;
+
+SELECT title, release_year
+FROM films
+WHERE (release_year = 1990 OR release_year = 1999)
+-- Add a filter to see only English or Spanish-language films
+	AND (language = 'English' OR language = 'Spanish');
+
+SELECT title, release_year
+FROM films
+WHERE (release_year = 1990 OR release_year = 1999)
+	AND (language = 'English' OR language = 'Spanish')
+-- Filter films with more than $2,000,000 gross
+	AND gross > 2000000;
+```
+
+### Using BETWEEN
+
+Let's use `BETWEEN` with `AND` on the films database to get the `title`
+and `release_year` of all Spanish-language films released between 1990
+and 2000 (inclusive) with budgets over \$100 million.
+
+We have broken the problem into smaller steps so that you can build the
+query as you go along!
+
+**Instructions**
+
+- Select the `title` and `release_year` of all films released between
+  1990 and 2000 (inclusive) using `BETWEEN`.
+
+**Answer**
+
+```{python}
+%%sql
+
+```
+
+### LIKE and NOT LIKE
+
+The `LIKE` and `NOT LIKE` operators can be used to find records that
+either match or do not match a specified pattern, respectively. They can
+be coupled with the wildcards `%` and `_`. The `%` will match zero or
+many characters, and `_` will match a single character.
+
+This is useful when you want to filter text, but not to an exact word.
+
+Do the following exercises to gain some practice with these keywords.
+
+**Instructions**
+
+- Select the names of all people whose names begin with 'B'.
+
+<!-- -->
+
+- Select the names of people whose names have 'r' as the second letter.
+
+<!-- -->
+
+- Select the names of people whose names don't start with 'A'.
+
+**Answer**
+
+```{python}
+%%sql
+
+```
+
+### WHERE IN
+
+You now know you can query multiple conditions using the `IN` operator
+and a set of parentheses. It is a valuable piece of code that helps us
+keep our queries clean and concise.
+
+Try using the `IN` operator yourself!
+
+**Instructions**
+
+- Select the `title` and `release_year` of all films released in 1990 or
+  2000 that were longer than two hours.
+
+<!-- -->
+
+- Select the `title` and `language` of all films in English, Spanish, or
+  French using `IN`.
+
+<!-- -->
+
+- Select the `title`, `certification` and `language` of all films
+  certified NC-17 or R that are in English, Italian, or Greek.
+
+**Answer**
+
+```{python}
+%%sql
+
+```
+
+### Combining filtering and selecting
+
+Time for a little challenge. So far, your SQL vocabulary from this
+course includes `COUNT()`, `DISTINCT`, `LIMIT`, `WHERE`, `OR`, `AND`,
+`BETWEEN`, `LIKE`, `NOT LIKE`, and `IN`. In this exercise, you will try
+to use some of these together. Writing more complex queries will be
+standard for you as you become a qualified SQL programmer.
+
+As this query will be a little more complicated than what you've seen so
+far, we've included a bit of code to get you started. You will be using
+`DISTINCT` here too because, surprise, there are two movies named
+'Hamlet' in this dataset!
+
+Follow the instructions to find out what 90's films we have in our
+dataset that would be suitable for English-speaking teens.
+
+**Instructions**
+
+- Count the unique `title`s from the films database and use the alias
+  provided.
+- Filter to include only movies with a `release_year` from 1990 to 1999,
+  inclusive.
+- Add another filter narrowing your query down to English-language
+  films.
+- Add a final filter to select only films with 'G', 'PG', 'PG-13'
+  certifications.
+
+**Answer**
+
+```{python}
+%%sql
+
+```
+
+### Practice with NULLs
+
+Well done. Now that you know what `NULL` means and what it's used for,
+it's time for some more practice!
+
+Let's explore the `films` table again to better understand what data you
+have.
+
+**Instructions**
+
+- Select the `title` of every film that doesn't have a budget associated
+  with it and use the alias `no_budget_info`.
+
+<!-- -->
+
+- Count the number of films with a language associated with them and use
+  the alias `count_language_known`.
+
+**Answer**
+
+```{python}
+%%sql
+
+```
+
+## Aggregate Functions
+
+### Practice with aggregate functions
+
+Now let's try extracting summary information from a table using these
+new aggregate functions. Summarizing is helpful in real life when
+extracting top-line details from your dataset. Perhaps you'd like to
+know how old the oldest film in the films table is, what the most
+expensive film is, or how many films you have listed.
+
+Now it's your turn to get more insights about the `films` table!
+
+**Instructions**
+
+- Use the `SUM()` function to calculate the total `duration` of all
+  films and alias with `total_duration`.
+
+<!-- -->
+
+- Calculate the average duration of all films and alias with
+  `average_duration`.
+
+<!-- -->
+
+- Find the most recent `release_year` in the `films` table, aliasing as
+  `latest_year`.
+
+<!-- -->
+
+- Find the `duration` of the shortest film and use the alias
+  `shortest_film`.
+
+**Answer**
+
+```{python}
+%%sql
+
+```
+
+### Combining aggregate functions with WHERE
+
+When combining aggregate functions with `WHERE`, you get a powerful tool
+that allows you to get more granular with your insights, for example, to
+get the total budget of movies made from the year 2010 onwards.
+
+This combination is useful when you only want to summarize a subset of
+your data. In your film-industry role, as an example, you may like to
+summarize each certification category to compare how they each perform
+or if one certification has a higher average budget than another.
+
+Let's see what insights you can gain about the financials in the
+dataset.
+
+**Instructions**
+
+- Use `SUM()` to calculate the total `gross` for all films made in the
+  year 2000 or later, and use the alias `total_gross`.
+
+<!-- -->
+
+- Calculate the average amount grossed by all films whose titles start
+  with the letter 'A' and alias with `avg_gross_A`.
+
+<!-- -->
+
+- Calculate the lowest gross film in 1994 and use the alias
+  `lowest_gross`.
+
+<!-- -->
+
+- Calculate the highest gross film between 2000 and 2012, inclusive, and
+  use the alias `highest_gross`.
+
+**Answer**
+
+```{python}
+%%sql
+
+```
+
+### Using ROUND()
+
+Aggregate functions work great with numerical values; however, these
+results can sometimes get unwieldy when dealing with long decimal
+values. Luckily, SQL provides you with the `ROUND()` function to tame
+these long decimals.
+
+If asked to give the average budget of your films, ten decimal places is
+not necessary. Instead, you can round to two decimal places to create
+results that make more sense for currency.
+
+Now you try!
+
+**Instructions**
+
+- Calculate the average `facebook_likes` to one decimal place and assign
+  to the alias, `avg_facebook_likes`.
+
+**Answer**
+
+```{python}
+%%sql
+
+```
+
+### ROUND() with a negative parameter
+
+A useful thing you can do with `ROUND()` is have a negative number as
+the decimal place parameter. This can come in handy if your manager only
+needs to know the average number of `facebook_likes` to the hundreds
+since granularity below one hundred likes won't impact decision making.
+
+Social media plays a significant role in determining success. If a movie
+trailer is posted and barely gets any likes, the movie itself may not be
+successful. Remember how 2020's "Sonic the Hedgehog" movie got a revamp
+after the public saw the trailer?
+
+Let's apply this to other parts of the dataset and see what the
+benchmark is for movie budgets so, in the future, it's clear whether the
+film is above or below budget.
+
+**Instructions**
+
+- Calculate the average `budget` from the `films` table, aliased as
+  `avg_budget_thousands`, and round to the nearest thousand.
+
+**Answer**
+
+```{python}
+%%sql
+
+```
+
+### Aliasing with functions
+
+Aliasing can be a lifesaver, especially as we start to do more complex
+SQL queries with multiple criteria. Aliases help you keep your code
+clean and readable. For example, if you want to find the `MAX()` value
+of several fields without aliasing, you'll end up with the result with
+several columns called `max` and no idea which is which. You can fix
+this with aliasing.
+
+Now, it's over to you to clean up the following queries.
+
+**Instructions**
+
+- Select the `title` and `duration` in hours for all films and alias as
+  `duration_hours`; since the current durations are in minutes, you'll
+  need to divide `duration` by `60.0`.
+
+<!-- -->
+
+- Calculate the percentage of `people` who are no longer alive and alias
+  the result as `percentage_dead`.
+
+<!-- -->
+
+- Find how many decades (period of ten years) the `films` table covers
+  by using `MIN()` and `MAX()`; alias as `number_of_decades`.
+
+**Answer**
+
+```{python}
+%%sql
+
+```
+
+### Rounding results
+
+You found some valuable insights in the previous exercise, but many of
+the results were inconveniently long. We forgot to round! We won't make
+you redo them all; however, you'll update the worst offender in this
+exercise.
+
+**Instructions**
+
+- Update the query by adding `ROUND()` around the calculation and round
+  to two decimal places.
+
+**Answer**
+
+```{python}
+%%sql
+
+```
+
+## Sorting and Grouping
+
+### Sorting single fields
+
+Now that you understand how `ORDER BY` works, you'll put it into
+practice. In this exercise, you'll work on sorting single fields only.
+This can be helpful to extract quick insights such as the top-grossing
+or top-scoring film.
+
+The following exercises will help you gain further insights into the
+film database.
+
+**Instructions**
+
+- Select the `name` of each person in the `people` table, sorted
+  alphabetically.
+
+<!-- -->
+
+- Select the `title` and `duration` for every film, from longest
+  duration to shortest.
+
+**Answer**
+
+```{python}
+%%sql
+
+```
+
+### Sorting multiple fields
+
+`ORDER BY` can also be used to sort on multiple fields. It will sort by
+the first field specified, then sort by the next, and so on. As an
+example, you may want to sort the `people` data by age and keep the
+names in alphabetical order.
+
+Try using `ORDER BY` to sort multiple columns.
+
+**Instructions**
+
+- Select the `release_year`, `duration`, and `title` of films ordered by
+  their release year and duration, in that order.
+
+<!-- -->
+
+- Select the `certification`, `release_year`, and `title` from `films`
+  ordered first by certification (alphabetically) and second by release
+  year, starting with the most recent year.
+
+**Answer**
+
+```{python}
+%%sql
+
+```
+
+### GROUP BY single fields
+
+`GROUP BY` is a SQL keyword that allows you to group and summarize
+results with the additional use of aggregate functions. For example,
+films can be grouped by the certification and language before counting
+the film titles in each group. This allows you to see how many films had
+a particular certification and language grouping.
+
+In the following steps, you'll summarize other groups of films to learn
+more about the films in your database.
+
+**Instructions**
+
+- Select the `release_year` and count of films released in each year
+  aliased as `film_count`.
+
+<!-- -->
+
+- Select the `release_year` and average duration aliased as
+  `avg_duration` of all films, grouped by `release_year`.
+
+**Answer**
+
+```{python}
+%%sql
+
+```
+
+### GROUP BY multiple fields
+
+`GROUP BY` becomes more powerful when used across multiple fields or
+combined with `ORDER BY` and `LIMIT`.
+
+Perhaps you're interested in learning about budget changes throughout
+the years in individual countries. You'll use grouping in this exercise
+to look at the maximum budget for each country in each year there is
+data available.
+
+**Instructions**
+
+- Select the `release_year`, `country`, and the maximum `budget` aliased
+  as `max_budget` for each year and each country; sort your results by
+  `release_year` and `country`.
+
+**Answer**
+
+```{python}
+%%sql
+
+```
+
+### Filter with HAVING
+
+Your final keyword is `HAVING`. It works similarly to `WHERE` in that it
+is a filtering clause, with the difference that `HAVING` filters
+*grouped* data.
+
+Filtering grouped data can be especially handy when working with a large
+dataset. When working with thousands or even millions of rows, `HAVING`
+will allow you to filter for just the group of data you want, such as
+films over two hours in length!
+
+Practice using `HAVING` to find out which countries (or country) have
+the most varied film certifications.
+
+**Instructions**
+
+- Select `country` from the `films` table, and get the distinct count of
+  `certification` aliased as `certification_count`.
+- Group the results by `country`.
+- Filter the unique count of certifications to only results greater than
+  10.
+
+**Answer**
+
+```{python}
+%%sql
+
+```
+
+### HAVING and sorting
+
+Filtering and sorting go hand in hand and gives you greater
+interpretability by ordering our results.
+
+Let's see this magic at work by writing a query showing what countries
+have the highest average film budgets.
+
+**Instructions**
+
+- Select the `country` and the average budget as `average_budget`,
+  rounded to two decimal, from `films`.
+- Group the results by `country`.
+- Filter the results to countries with an average budget of more than
+  one billion (`1000000000`).
+- Sort by descending order of the `average_budget`.
+
+**Answer**
+
+```{python}
+%%sql
+
+```
+
+### All together now
+
+It's time to use much of what you've learned in one query! This is good
+preparation for using SQL in the real world where you'll often be asked
+to write more complex queries since some of the basic queries can be
+answered by playing around in spreadsheet applications.
+
+In this exercise, you'll write a query that returns the average budget
+and gross earnings for films each year after 1990 if the average budget
+is greater than 60 million.
+
+This will be a big query, but you can handle it!
+
+**Instructions**
+
+- Select the `release_year` for each film in the `films` table, filter
+  for records released after 1990, and group by `release_year`.
+
+<!-- -->
+
+- Modify the query to include the average `budget` aliased as
+  `avg_budget` and average `gross` aliased as `avg_gross` for the
+  results we have so far.
+
+<!-- -->
+
+- Modify the query once more so that only years with an average budget
+  of greater than 60 million are included.
+
+<!-- -->
+
+- Finally, order the results from the highest average gross and limit to
+  one.
+
+**Answer**
+
+```{python}
+%%sql
+
+```
