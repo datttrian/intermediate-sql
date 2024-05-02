@@ -19,14 +19,9 @@ CREATE TABLE films (
 
 CREATE TABLE roles (
     id INT PRIMARY KEY,
-    title VARCHAR(255),
-    release_year INT,
-    country VARCHAR(255),
-    duration INT,
-    language VARCHAR(255),
-    certification VARCHAR(255),
-    gross INT,
-    budget INT
+    film_id INT,
+    person_id INT,
+    role VARCHAR(255)
 );
 
 CREATE TABLE reviews (
